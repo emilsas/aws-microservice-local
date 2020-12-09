@@ -1,0 +1,34 @@
+version: '2'
+services:
+  api-gateway:
+    build: api-gateway
+    container_name: app-py
+    restart: always
+    depends_on:
+      - "dynamodb-local"
+    links:
+      - "dynamodb-local"
+    volumes: 
+      - "./lambda_code:/code/lambda_code"
+    ports:
+      - "5000:5000"
+    environment:
+      - AWS_ACCESS_KEY_ID=DUMMYACCESS
+      - AWS_SECRET_ACCESS_KEY=DUMMYSECRET
+      - AWS_DEFAULT_REGION=us-east-1
+  dynamodb-init:
+    build: dynamo-init
+    container_name: dynamodb-init
+    depends_on:
+      - "dynamodb-local"
+    links:
+      - "dynamodb-local"
+    environment:
+      - AWS_ACCESS_KEY_ID=DUMMYACCESS
+      - AWS_SECRET_ACCESS_KEY=DUMMYSECRET
+      - AWS_DEFAULT_REGION=us-east-1
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"

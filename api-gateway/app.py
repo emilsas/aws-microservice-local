@@ -5,7 +5,16 @@ from flask import Flask, request, Response
 from flask_cors import CORS
 from datetime import datetime
 
+from init_db import create_tables, put_items
 from lambda_code import lambda_function
+
+try:
+    print('Initializing DynamoDB...')
+    create_tables()
+    put_items()
+    print('DynamoDB Table created')
+except Exception:
+    pass
 
 app = Flask(__name__)
 CORS(app)
